@@ -1,0 +1,56 @@
+FROM ubuntu:24.04
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install basics + sudo
+RUN apt-get update && apt-get install -y \
+    git curl wget vim nano unzip sudo \
+    ca-certificates gnupg lsb-release \
+    python3 python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 22
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    NODE_MAJOR=22 && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install browser deps
+RUN apt-get update && apt-get install -y \
+    libgbm1 libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+    libxkbcommon0 libxcomposite1 libxdamage1 libxext6 libxfixes3 \
+    libxrandr2 libpango-1.0-0 libcairo2 libasound2t64 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup 'node' user (rename 'ubuntu' if it exists with uid 1000, or create new)
+RUN if id ubuntu &>/dev/null; then \
+        usermod -l node -d /home/node -m ubuntu; \
+        groupmod -n node ubuntu; \
+    else \
+        useradd -m -s /bin/bash -u 1000 node; \
+    fi && \
+    echo "node ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/node && \
+    chmod 0440 /etc/sudoers.d/node
+
+# Pre-create app directory and node_modules with correct ownership
+RUN mkdir -p /app/openclaw/node_modules && chown -R node:node /app
+
+# Install Gemini CLI globally (as root)
+RUN npm install -g @google/gemini-cli
+
+# Switch to 'node' user
+USER node
+ENV HOME=/home/node
+WORKDIR /app/openclaw
+
+# Install Bun as the 'node' user
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="/home/node/.bun/bin:${PATH}"
+
+# Enable corepack (requires sudo as we are not root)
+RUN sudo corepack enable
+
+CMD ["bash"]

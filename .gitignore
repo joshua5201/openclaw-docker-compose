@@ -1,0 +1,13 @@
+# OpenClaw nested repository
+openclaw/
+
+# Generated configuration and workspace
+config/
+workspace/
+
+# Docker volumes and artifacts
+docker-compose.override.yml
+
+# System files
+.DS_Store
+Thumbs.db
