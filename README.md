@@ -19,7 +19,7 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
 
 1.  **Clone this repository:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/joshua5201/openclaw-docker-compose.git
     cd openclaw-docker-compose
     ```
 
