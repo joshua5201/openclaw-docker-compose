@@ -1,6 +1,6 @@
 # openclaw-docker-compose
 
-A reproducible, isolated Docker environment for [OpenClaw](https://github.com/openclaw/openclaw), designed to keep your host system clean and secure.
+A reproducible, isolated Docker environment for [OpenClaw](https://github.com/openclaw/openclaw) (formerly known as **Moltbot** and **Clawdbot**), designed to keep your host system clean and secure.
 
 ## Features
 
@@ -65,3 +65,7 @@ The agent's memory and workspace are stored in `workspace/`.
 - **"Pairing Required" (Error 1008):** See step 3 in Quick Start.
 - **Gateway not accessible:** Ensure the container is running (`docker compose ps`) and listening on port `18789`.
 - **Re-run Wizard:** If you need to reconfigure, run `./run_wizard.sh`.
+
+## Disclaimer
+
+This software is provided "as is" without warranty of any kind. OpenClaw is a powerful AI agent capable of executing commands and modifying files. **Use this software at your own risk.** The authors of this Docker wrapper are not responsible for any data loss or security incidents resulting from its use. Ensure you understand the capabilities of the agent before granting it extensive permissions.
