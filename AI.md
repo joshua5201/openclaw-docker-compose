@@ -33,6 +33,7 @@ This repository provides a reproducible, isolated Docker environment for [OpenCl
 To maintain a clean and safe development process, all AI agents must follow these rules:
 
 1. **Branching Strategy**: Always create a new feature/bugfix branch for any development work. Do not work directly on the `main` branch.
-2. **No Auto-Push**: Do not push changes to the remote repository (GitHub) automatically. Always wait for explicit user confirmation before pushing.
-3. **Commit Messages**: Use clear, descriptive commit messages following the project's style.
-4. **Testing**: Verify changes inside the Docker sandbox using the provided build/test commands before considering a task complete.
+2. **Merge Strategy**: Always use the `--no-ff` flag when merging locally to preserve branch history.
+3. **No Auto-Push**: Do not push changes to the remote repository (GitHub) automatically. Always wait for explicit user confirmation before pushing.
+4. **Commit Messages**: Use clear, descriptive commit messages following the project's style.
+5. **Testing**: Verify changes inside the Docker sandbox using the provided build/test commands before considering a task complete.
