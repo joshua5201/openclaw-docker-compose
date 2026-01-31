@@ -1,4 +1,4 @@
-# OpenClaw Docker Sandbox
+# openclaw-docker-compose
 
 A reproducible, isolated Docker environment for [OpenClaw](https://github.com/openclaw/openclaw), designed to keep your host system clean and secure.
 
