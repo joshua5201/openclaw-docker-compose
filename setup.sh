@@ -14,40 +14,18 @@ else
     cd "$REPO_DIR" && git pull && cd - > /dev/null
 fi
 
-echo "==> Building OpenClaw Sandbox Image..."
+echo "==> Building OpenClaw Image..."
 docker compose build
 
-echo "==> Installing dependencies inside isolated volume..."
-docker compose run --rm sandbox pnpm install
+echo "==> Installing dependencies (isolated volume)..."
+docker compose run --rm openclaw pnpm install
 
 echo "==> Compiling OpenClaw..."
-docker compose run --rm sandbox pnpm build
+docker compose run --rm openclaw pnpm build
 
 echo "==> Building UI..."
-docker compose run --rm sandbox pnpm ui:build
-
-# Generate a random token
-TOKEN=$(openssl rand -hex 32)
-echo ""
-echo "=================================================================="
-echo "GENERATED GATEWAY TOKEN: $TOKEN"
-echo "=================================================================="
-echo "Please COPY and SAVE this token now."
-echo "You will need to provide it during the onboarding wizard if asked,"
-echo "or use it to log in to the dashboard later."
-echo "=================================================================="
-echo ""
-echo "==> Launching Onboarding Wizard..."
-echo "This will configure your OpenClaw instance."
-echo "Note: Choose 'token' auth and 'lan' bind when prompted."
-echo ""
-
-# Run the onboarding command
-docker compose run --rm sandbox node openclaw.mjs onboard --no-install-daemon
+docker compose run --rm openclaw pnpm ui:build
 
 echo ""
-echo "==> Setup Complete!"
-echo "To start the gateway, run:"
-echo "  docker compose up -d gateway"
-echo ""
-echo "The gateway will be available at: http://localhost:18789"
+# Hand over to the wizard script for config and startup
+./run_wizard.sh

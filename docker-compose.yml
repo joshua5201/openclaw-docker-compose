@@ -1,14 +1,13 @@
 services:
-  # The main gateway service (runs the AI assistant)
-  gateway:
+  openclaw:
     build:
       context: .
       dockerfile: Dockerfile.sandbox
-    image: openclaw-sandbox:local
-    container_name: openclaw-gateway
+    image: openclaw:local
+    container_name: openclaw
     restart: unless-stopped
     ports:
-      - "18789:18789" # Gateway UI
+      - "127.0.0.1:18789:18789" # Gateway UI (Localhost only)
       - "18790:18790" # Bridge Port
     volumes:
       - ./openclaw:/app/openclaw
@@ -21,31 +20,10 @@ services:
       - OPENCLAW_WORKSPACE_DIR=/home/node/.openclaw/workspace
       - NODE_ENV=production
     working_dir: /app/openclaw
-    # Command to start the gateway
-    command: node dist/index.js gateway --bind lan --port 18789
-
-  # The sandbox/CLI service (for running wizard, manual commands, development)
-  sandbox:
-    build:
-      context: .
-      dockerfile: Dockerfile.sandbox
-    image: openclaw-sandbox:local
-    container_name: openclaw-sandbox
-    volumes:
-      - ./openclaw:/app/openclaw
-      # Use a named volume for node_modules to keep it isolated from host
-      - openclaw_node_modules:/app/openclaw/node_modules
-      - ./config:/home/node/.openclaw
-      - ./workspace:/home/node/.openclaw/workspace
-    environment:
-      - OPENCLAW_CONFIG_DIR=/home/node/.openclaw
-      - OPENCLAW_WORKSPACE_DIR=/home/node/.openclaw/workspace
-      - NODE_ENV=development
-    working_dir: /app/openclaw
     stdin_open: true
     tty: true
-    # Default to shell so you can exec in
-    command: bash
+    # Command to start the gateway
+    command: node dist/index.js gateway --bind lan --port 18789
 
 volumes:
   openclaw_node_modules:
