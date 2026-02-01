@@ -55,6 +55,10 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
 - **View Logs:** `docker compose logs -f openclaw`
 - **Open Shell:** `docker compose exec openclaw bash`
 
+## Tips
+
+- **Browser Setup:** When asking the agent to use a headless browser, tell it that it is executing inside a Docker sandbox. This informs the agent that it does not need to use additional sandbox mode when setting up the browser.
+
 ## Configuration
 
 Your OpenClaw configuration is stored in the `config/` directory (ignored by git).
