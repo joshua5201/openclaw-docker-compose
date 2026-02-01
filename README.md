@@ -57,6 +57,7 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
 
 ## Tips
 
+- **Browser Performance:** If you experience performance issues when running the browser inside the main container, you can use the built-in `browserless` service. In your agent configuration, set the browser connection URL to `ws://browserless:3000`. This offloads browser execution and provides 10 concurrent sessions with 2GB of shared memory.
 - **Browser Setup:** When asking the agent to use a headless browser, tell it that it is executing inside a Docker sandbox. This informs the agent that it does not need to use additional sandbox mode when setting up the browser.
 
 ## Configuration
