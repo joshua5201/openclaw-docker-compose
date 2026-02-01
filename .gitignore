@@ -6,8 +6,15 @@ config/
 workspace/
 
 # Docker volumes and artifacts
+vault-data/
 docker-compose.override.yml
+.env
 
 # System files
 .DS_Store
 Thumbs.db
+
+
+bin/
+certs/
+developer-notes/

@@ -25,5 +25,15 @@ services:
     # Command to start the gateway
     command: node dist/index.js gateway --bind lan --port 18789
 
+  browserless:
+    image: browserless/chrome:latest
+    container_name: browserless
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    shm_size: '2gb'
+    environment:
+      - CONCURRENT_SESSIONS=10
+
 volumes:
   openclaw_node_modules:
