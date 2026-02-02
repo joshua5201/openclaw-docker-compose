@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile.sandbox
     image: openclaw:local
-    container_name: openclaw
     restart: unless-stopped
     ports:
       # Think twice if you want to change the binding to all IPs (0.0.0.0)
@@ -28,7 +27,6 @@ services:
 
   browserless:
     image: browserless/chrome:latest
-    container_name: browserless
     restart: unless-stopped
     ports:
       - "127.0.0.1:${BROWSERLESS_PORT}:3000"
