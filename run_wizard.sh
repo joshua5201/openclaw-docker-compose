@@ -9,7 +9,8 @@ docker compose run --rm openclaw node openclaw.mjs onboard --no-install-daemon
 # Post-configure: Bind to LAN
 CONFIG_FILE="config/openclaw.json"
 if [ -f "$CONFIG_FILE" ]; then
-    echo "==> Configuring gateway to listen on LAN..."
+    echo "==> Configuring gateway to listen on LAN inside container..."
+    echo "    (Note: Docker port binding is 127.0.0.1 by default, don't panic!)"
     # Replace "bind": "loopback" with "bind": "lan"
     if grep -q '"bind": "loopback"' "$CONFIG_FILE"; then
         sed -i 's/"bind": "loopback"/"bind": "lan"/' "$CONFIG_FILE"
@@ -32,12 +33,16 @@ sleep 5
 # Grab Token and Print URL
 if [ -f "$CONFIG_FILE" ]; then
     TOKEN=$(grep -o '"token": "[^"]*"' "$CONFIG_FILE" | cut -d'"' -f4)
+    # Get the actual mapped port from Docker (handles custom ports or random assignment)
+    MAPPED_PORT=$(docker compose port openclaw 18789 | awk -F: '{print $NF}')
+    if [ -z "$MAPPED_PORT" ]; then MAPPED_PORT="18789"; fi
+
     if [ -n "$TOKEN" ]; then
         echo "========================================================"
         echo "✅ OpenClaw is running!"
         echo ""
         echo "Dashboard URL:"
-        echo "http://localhost:18789/?token=$TOKEN"
+        echo "http://localhost:$MAPPED_PORT/?token=$TOKEN"
         echo "========================================================"
     else
         echo "Could not find token in config file. Please check manually."
