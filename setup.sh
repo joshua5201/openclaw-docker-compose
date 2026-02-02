@@ -8,7 +8,7 @@ mkdir -p config workspace
 REPO_DIR="openclaw"
 if [ ! -d "$REPO_DIR" ] || [ -z "$(ls -A $REPO_DIR)" ]; then
     echo "==> Cloning OpenClaw repository..."
-    git clone https://github.com/openclaw/openclaw.git "$REPO_DIR"
+    git clone --depth 10 https://github.com/openclaw/openclaw.git "$REPO_DIR"
 else
     echo "==> Updating OpenClaw repository..."
     cd "$REPO_DIR" && git pull && cd - > /dev/null
