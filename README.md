@@ -14,6 +14,7 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
 
 - **Docker** and **Docker Compose** installed on your system.
 - `git`
+- **Note:** This project has only been tested on **Ubuntu 24.04**.
 
 ## Quick Start
 
@@ -65,11 +66,26 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
 Your OpenClaw configuration is stored in the `config/` directory (ignored by git).
 The agent's memory and workspace are stored in `workspace/`.
 
+### Port Configuration
+
+You can specify the host ports in your `.env` file. If not set, they may be assigned to random ports by Docker.
+
+Add the following to your `.env`:
+```env
+OPENCLAW_PORT=18789
+OPENCLAW_BRIDGE_PORT=18790
+BROWSERLESS_PORT=3000
+```
+
 ## Troubleshooting
 
 - **"Pairing Required" (Error 1008):** See step 3 in Quick Start.
 - **Gateway not accessible:** Ensure the container is running (`docker compose ps`) and listening on port `18789`.
 - **Re-run Wizard:** If you need to reconfigure, run `./run_wizard.sh`.
+
+## Contributing
+
+Feel free to submit PRs!
 
 ## Disclaimer
 
