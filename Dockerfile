@@ -15,23 +15,24 @@ RUN apt-get install -y \
     libxkbcommon0 libxcomposite1 libxdamage1 libxext6 libxfixes3 \
     libxrandr2 libpango-1.0-0 libcairo2 libasound2t64
 
-# Nix Setup
-RUN apt-get install -y nix-setup-systemd
-RUN adduser node nix-users
-
+# Prepare /nix for single-user installation
+RUN mkdir -p /nix && chown -R node:node /nix
 
 # Switch to 'node' user
 USER node
 ENV HOME=/home/node
 WORKDIR /home/node
 
-# Install OpenClaw
-ENV PATH="/home/node/.npm-global/bin:$PATH"
-RUN curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard 
+# Install Nix (single-user, no daemon) and configure sandbox off
+ENV NIX_INSTALLER_NO_MODIFY_PROFILE=1
+ENV NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon
+RUN mkdir -p /home/node/.config/nix && \
+    printf "sandbox = false\nexperimental-features = nix-command flakes\n" > /home/node/.config/nix/nix.conf
 
-# Nix Envs
-ENV PATH=$PATH:$HOME/.nix-profile/bin\
-ENV XDG_DATA_DIRS="$HOME/.nix-profile/bin:$HOME/.nix-profile/share:$XDG_DATA_DIRS"
+# Install OpenClaw
+ENV PATH="/home/node/.nix-profile/bin:/home/node/.npm-global/bin:$PATH"
+RUN curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard 
 
 WORKDIR /app/openclaw
 

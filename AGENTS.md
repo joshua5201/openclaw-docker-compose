@@ -3,31 +3,32 @@
 This file provides context and instructions for AI assistants (Gemini, Claude, ChatGPT, etc.) working on the `openclaw-docker-compose` repository.
 
 ## Project Overview
-This repository provides a reproducible, isolated Docker environment for [OpenClaw](https://github.com/openclaw/openclaw). It uses a single-container architecture where the container acts as both the gateway server and the development sandbox.
+This repository provides a reproducible, isolated Docker environment for [OpenClaw](https://github.com/openclaw/openclaw). The main `openclaw` container hosts the gateway and CLI, and a separate `browserless` service is available for browser automation workloads.
 
 ## Architecture
 - **Service Name**: `openclaw`
-- **Base Image**: Ubuntu 24.04 (Noble) with Node.js 22.
+- **Base Image**: `node:22-trixie`
 - **Persistence**: 
-  - `./openclaw`: Source code (mounted).
-  - `./config`: Gateway configuration.
-  - `./workspace`: Agent state and memory.
-  - `openclaw_node_modules`: Docker volume for isolated dependencies.
+  - `./config`: OpenClaw config directory mounted to `/home/node/.openclaw`
+  - `./workspace`: Agent workspace mounted to `/home/node/.openclaw/workspace`
+- **Port Bindings**:
+  - `127.0.0.1:${OPENCLAW_PORT}:18789` (Gateway UI)
+  - `127.0.0.1:${OPENCLAW_BRIDGE_PORT}:18790` (Bridge)
+- **Companion Service**: `browserless/chrome:latest` on `127.0.0.1:${BROWSERLESS_PORT}:3000`
 
 ## Key Commands
 
 ### Setup & Build
 - Full Setup: `./setup.sh`
 - Build Image: `docker compose build`
-- Install Dependencies: `docker compose run --rm openclaw pnpm install`
-- Compile Source: `docker compose run --rm openclaw pnpm build`
-- Build UI: `docker compose run --rm openclaw pnpm ui:build`
+- Run Onboarding Wizard: `./run_wizard.sh`
 
 ### Runtime & CLI
 - Start Gateway: `docker compose up -d`
 - Stop Gateway: `docker compose down`
 - Enter Sandbox: `docker compose exec openclaw bash`
-- Pair Device: `docker compose exec openclaw node openclaw.mjs devices approve <ID>`
+- Pair Device: `docker compose exec openclaw devices approve <ID>`
+- List Pair Requests: `docker compose exec openclaw devices list`
 
 ## AI Agent Workflow Guidelines
 To maintain a clean and safe development process, all AI agents must follow these rules:

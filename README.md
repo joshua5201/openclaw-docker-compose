@@ -4,11 +4,11 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
 
 ## Features
 
-- **Single Container Architecture**: Runs both the Gateway and CLI tools in one isolated container.
-- **Automated Setup**: One script (`./setup.sh`) handles cloning, building, dependencies, and configuration.
-- **Isolated Workspace**: `node_modules` are kept in a Docker volume, keeping your local repo clean.
+- **Gateway + Browserless Services**: `openclaw` runs gateway/CLI, and `browserless` handles headless browser workloads.
+- **Automated Setup**: One script (`./setup.sh`) handles image build, onboarding, and startup.
 - **Non-Root Security**: Runs as a non-root `node` user (UID 1000) inside the container.
 - **Persistent Storage**: Configuration and workspace data persist in local `config/` and `workspace/` directories.
+- **Built-in Nix**: Single-user Nix is preinstalled in the container (`--no-daemon`) with sandbox mode disabled.
 
 ## Prerequisites
 
@@ -29,9 +29,7 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
     ./setup.sh
     ```
     This script will:
-    *   Clone/update the OpenClaw source code into `./openclaw`.
     *   Build the Docker image.
-    *   Install dependencies and compile the project.
     *   Launch the interactive **Onboarding Wizard**.
     *   Configure the gateway to listen on LAN (for Docker access).
     *   Start the gateway and provide your **Dashboard URL**.
@@ -42,11 +40,11 @@ A reproducible, isolated Docker environment for [OpenClaw](https://github.com/op
     
     1.  List pending requests:
         ```bash
-        docker compose exec openclaw node openclaw.mjs devices list
+        docker compose exec openclaw devices list
         ```
     2.  Approve the request ID:
         ```bash
-        docker compose exec openclaw node openclaw.mjs devices approve <ID>
+        docker compose exec openclaw devices approve <ID>
         ```
 
 ## Usage
@@ -68,13 +66,27 @@ The agent's memory and workspace are stored in `workspace/`.
 
 ### Port Configuration
 
-You can specify the host ports in your `.env` file. If not set, they may be assigned to random ports by Docker.
+Set host ports in your `.env` file (recommended) to avoid compose warnings and ensure stable localhost bindings.
 
 Add the following to your `.env`:
 ```env
 OPENCLAW_PORT=18789
 OPENCLAW_BRIDGE_PORT=18790
 BROWSERLESS_PORT=3000
+```
+
+### Nix Configuration (Inside Container)
+
+The `openclaw` image includes single-user Nix for the `node` user:
+
+- Installed with `--no-daemon`
+- Nix sandbox disabled via `/home/node/.config/nix/nix.conf`
+- Nix binary available on `PATH` at `/home/node/.nix-profile/bin`
+
+Verify inside the container:
+
+```bash
+docker compose exec openclaw bash -lc 'which nix && nix --version && nix config show | rg "^sandbox|^experimental-features"'
 ```
 
 ## Troubleshooting

@@ -21,3 +21,5 @@ developer-notes/
 
 .gemini/
 gha-creds-*.json
+
+nix-data
