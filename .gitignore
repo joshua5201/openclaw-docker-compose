@@ -18,3 +18,8 @@ Thumbs.db
 bin/
 certs/
 developer-notes/
+
+.gemini/
+gha-creds-*.json
+
+nix-data
