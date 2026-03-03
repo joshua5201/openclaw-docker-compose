@@ -4,7 +4,7 @@ set -e
 echo "==> Launching Onboarding Wizard..."
 echo "Follow the prompts. You can choose 'Auto-generate' for the token."
 echo ""
-docker compose run --rm openclaw node openclaw.mjs onboard --no-install-daemon
+docker compose run --rm openclaw openclaw onboard --no-install-daemon
 
 # Post-configure: Bind to LAN
 CONFIG_FILE="config/openclaw.json"
@@ -56,8 +56,8 @@ echo "⚠️  FINAL STEP: DEVICE PAIRING"
 echo "Because you are running in Docker, you must manually approve your browser:"
 echo "1. Open the Dashboard URL above."
 echo "2. If you see 'Pairing Required', run this command to see the request ID:"
-echo "   docker compose exec openclaw node openclaw.mjs devices list"
+echo "   docker compose exec openclaw devices list"
 echo "3. Approve the request using its ID (e.g., 0):"
-echo "   docker compose exec openclaw node openclaw.mjs devices approve 0"
+echo "   docker compose exec openclaw devices approve 0"
 echo ""
 echo "To enter the shell: docker compose exec openclaw bash"

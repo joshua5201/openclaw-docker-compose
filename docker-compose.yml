@@ -2,9 +2,7 @@ services:
   openclaw:
     build:
       context: .
-      dockerfile: Dockerfile.sandbox
-    image: openclaw:local
-    restart: unless-stopped
+      dockerfile: Dockerfile
     ports:
       # Think twice if you want to change the binding to all IPs (0.0.0.0)
       - "127.0.0.1:${OPENCLAW_PORT}:18789" # Gateway UI (Localhost only)
@@ -15,6 +13,7 @@ services:
       - openclaw_node_modules:/app/openclaw/node_modules
       - ./config:/home/node/.openclaw
       - ./workspace:/home/node/.openclaw/workspace
+      - ./nix-data:/nix
     environment:
       - OPENCLAW_CONFIG_DIR=/home/node/.openclaw
       - OPENCLAW_WORKSPACE_DIR=/home/node/.openclaw/workspace
@@ -23,7 +22,9 @@ services:
     stdin_open: true
     tty: true
     # Command to start the gateway
-    command: node dist/index.js gateway --bind lan --port 18789
+    command: openclaw gateway --bind lan --port 18789
+    depends_on:
+      - browserless
 
   browserless:
     image: browserless/chrome:latest
