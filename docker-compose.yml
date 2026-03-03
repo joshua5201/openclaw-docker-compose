@@ -13,7 +13,6 @@ services:
     environment:
       - OPENCLAW_CONFIG_DIR=/home/node/.openclaw
       - OPENCLAW_WORKSPACE_DIR=/home/node/.openclaw/workspace
-      - NODE_ENV=production
     working_dir: /app/openclaw
     stdin_open: true
     tty: true
